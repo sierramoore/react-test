@@ -1,4 +1,5 @@
 import React from 'react'; // not using a class that extends from {Component}
+// state is only avaliable with components that extend {Component}
 
 // props.children is: <Person> anything here is props.children </Person>
 const person = (props) => {
@@ -12,3 +13,4 @@ const person = (props) => {
 };
 
 export default person;
+
