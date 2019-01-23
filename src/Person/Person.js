@@ -1,12 +1,14 @@
 import React from 'react'; // not using a class that extends from {Component}
 // state is only avaliable with components that extend {Component}
+import './Person.css'
 
 // props.children is: <Person> anything here is props.children </Person>
 const person = (props) => {
   return (
-      <div>
+      <div className="Person">
           <p onClick={props.click}>I'm {props.name} and i am {props.age} years old. I like number {Math.floor(Math.random() * 33 )}</p>
           <p>{props.children}</p>
+          <input type="text" onChange={props.changed} value={props.name}/>
       </div>
 
   )

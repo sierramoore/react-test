@@ -25,11 +25,32 @@ class App extends Component {
        })
   };
 
+  nameChangedHandler = (e) => {
+      this.setState({
+          persons: [
+              { name: 'Felixchick', age: 24},
+              { name: 'Romchick', age: 4},
+              { name: e.target.value, age: 15}
+          ]
+      })
+  };
+
   render() {
+      // inline-styles will be scoped to component
+      const btnStyle = {
+          backgroundColor: 'white',
+          font: 'sans-serif',
+          border: '2px solid lavender',
+          padding: '8px',
+          cursor: 'pointer'
+      };
+
     return (
       <div className="App">
         <h1>Im a react app</h1>
-        <button onClick={() => this.switchNameHandler('new name Sierra')}>Switch name</button>
+        <button
+            style={btnStyle}
+            onClick={() => this.switchNameHandler('new name Sierra')}>Switch name</button>
         <Person
             name={this.state.persons[0].name}
             age={this.state.persons[0].age}
@@ -40,7 +61,8 @@ class App extends Component {
             click={this.switchNameHandler.bind(this, 'Sierrachka!!')}
         />
         <Person name={this.state.persons[2].name}
-                age={this.state.persons[2].age}>
+                age={this.state.persons[2].age}
+                changed={this.nameChangedHandler}>
             My hobbies are: Watching the hobbit
         </Person>
       </div>
