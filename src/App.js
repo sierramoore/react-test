@@ -14,16 +14,11 @@ class App extends Component {
       showPerson: false
   };
 
-  switchNameHandler = (newName) => {
-      // dont use mutate state directly like: this.state.prop = 'something'
-      // setState takes an obj as an arg
-       this.setState({
-           persons: [
-               { name: newName, age: 24},
-               { name: 'Romchick', age: 4},
-               { name: 'Felixchick', age: 15}
-           ]
-       })
+  deletePersonHandler = (personIndex) => {
+      // const persons = this.state.persons.slice(); // fetch all ppl (create a copy with slice to NOT mutate original data)
+      const persons = [...this.state.persons]; // this method works just as well as ^(with slice)
+      persons.splice(personIndex, 1); // create new version of that array and remove one element from array
+      this.setState({persons: persons}) // update the ppl in new state
   };
 
   nameChangedHandler = (e) => {
@@ -41,44 +36,46 @@ class App extends Component {
       this.setState({showPerson: !doesShow}); // change state to opposite of what current state is
   };
 
-  render() {
-      // inline-styles will be scoped to component
-      const btnStyle = {
-          backgroundColor: 'white',
-          font: 'sans-serif',
-          border: '2px solid lavender',
-          padding: '8px',
-          cursor: 'pointer'
-      };
+    render() {
+        // inline-styles will be scoped to component
+        const btnStyle = {
+            backgroundColor: 'white',
+            font: 'sans-serif',
+            border: '2px solid lavender',
+            padding: '8px',
+            cursor: 'pointer'
+        };
 
-    return (
-      <div className="App">
-        <h1>Im a react app</h1>
-        <button
-            style={btnStyle}
-            onClick={this.togglePersonHandler}>Display People</button>
-       {
-           this.state.showPerson ?
-           <div>
-              <Person
-                  name={this.state.persons[0].name}
-                  age={this.state.persons[0].age}
-              />
-              <Person
-                  name={this.state.persons[1].name}
-                  age={this.state.persons[1].age}
-                  click={this.switchNameHandler.bind(this, 'Sierrachka!!')}
-              />
-              <Person name={this.state.persons[2].name}
-                      age={this.state.persons[2].age}
-                      changed={this.nameChangedHandler}>
-                  My hobbies are: Watching the hobbit
-              </Person>
-          </div> : null
-       }
-      </div>
-    );
-  }
+        let persons = null; // set default state
+
+        if (this.state.showPerson) { // if the state changes
+            // set persons variable to contain all of persons 'html' to render
+            // it will render bkus {persons} is referenced inside the below return statement
+
+            // index param is passed in automatically with arrow fn at beginning
+            persons = (
+                <div>
+                    {this.state.persons.map((person, index) => {
+                        return <Person
+                            click={() => this.deletePersonHandler(index)}
+                            name={person.name}
+                            age={person.age}/>
+                    })}
+                </div>
+            )
+        }
+
+        return (
+            <div className="App">
+                <h1>Im a react app</h1>
+                <button
+                    style={btnStyle}
+                    onClick={this.togglePersonHandler}>Display People
+                </button>
+                {persons}
+            </div>
+        );
+    }
 }
 
 export default App;
