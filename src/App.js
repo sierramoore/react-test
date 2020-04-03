@@ -1,14 +1,30 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import './App.css';
 import Person from './Person/Person';
+
+// styled components like this can conditionally render styles using boolean statement in a custom tag in the styleWrapper
+const StyledButton = styled.button`
+   background-color: ${props => props.alt ? 'red' : 'green'};
+   color: white;
+   font: sans-serif;
+   border: 2px solid lavender;
+   padding: 8px;
+   cursor: pointer;
+   
+   &:hover {
+       background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+       color: black;
+   }
+`;
 
 class App extends Component {
     // state can only be accessed in classed based components
   state = {
     persons: [
-      { name: 'Sierra', age: 24},
-      { name: 'Roma', age: 4},
-      { name: 'Felix', age: 14}
+      { id: 'a', name: 'Sierra', age: 24},
+      { id: 'b', name: 'Roma', age: 4},
+      { id: 'c', name: 'Felix', age: 14}
     ],
       otherState: 'some other value',
       showPerson: false
@@ -21,7 +37,29 @@ class App extends Component {
       this.setState({persons: persons}) // update the ppl in new state
   };
 
-  nameChangedHandler = (e) => {
+  nameChangedHandler = (e, id) => {
+      // update state for respective input field being typed
+
+      // grab the person
+      const personIndex = this.state.persons.findIndex(p => {
+        return p.id === id; // return true or false if its the element you were looking for
+      });
+
+      // get the person at the index just fetched above ^ (using spread op to not mutate original data)
+      const person = {
+          ...this.state.persons[personIndex]
+      };
+      // other way than spread operator
+      // const person = Object.assign({}, this.state.persons[personIndex])
+
+      person.name = e.target.value; // using copy from above
+
+      // update array
+      const persons = [...this.state.persons];
+      persons[personIndex] = person;
+
+      this.setState( {persons: persons});
+
       this.setState({
           persons: [
               { name: 'Felixchick', age: 24},
@@ -38,13 +76,7 @@ class App extends Component {
 
     render() {
         // inline-styles will be scoped to component
-        const btnStyle = {
-            backgroundColor: 'white',
-            font: 'sans-serif',
-            border: '2px solid lavender',
-            padding: '8px',
-            cursor: 'pointer'
-        };
+
 
         let persons = null; // set default state
 
@@ -53,29 +85,46 @@ class App extends Component {
             // it will render bkus {persons} is referenced inside the below return statement
 
             // index param is passed in automatically with arrow fn at beginning
+            // key is default prop that helps update efficiently in dom
+            // index is not a good key(unique identifier) because it will change each time a person is deleted
+
+            // changed gets executed on an onChange event, in beginning of prop grab event obj
             persons = (
                 <div>
                     {this.state.persons.map((person, index) => {
                         return <Person
                             click={() => this.deletePersonHandler(index)}
                             name={person.name}
-                            age={person.age}/>
+                            age={person.age}
+                            key={person.id}
+                            changed={(e) => this.nameChangedHandler(e, person.id)}/>
                     })}
                 </div>
-            )
+            );
+
+        }
+
+        // let classes = ['orange', 'bold'].join(' '); // turn array of strings into one string of space seperated class names
+        let classes = [];
+        if(this.state.persons.length >= 2) {
+            classes.push('orange')
+        }
+        if(this.state.persons.length <= 1) {
+            classes.push('bold')
         }
 
         return (
-            <div className="App">
-                <h1>Im a react app</h1>
-                <button
-                    style={btnStyle}
-                    onClick={this.togglePersonHandler}>Display People
-                </button>
-                {persons}
-            </div>
+                <div className="App">
+                    <h1 className={classes.join(' ')}>Im a react app</h1>
+                    <StyledButton
+                        alt={this.state.showPerson}
+                        onClick={this.togglePersonHandler}>Display People
+                    </StyledButton>
+                    {persons}
+                </div>
         );
     }
+
 }
 
 export default App;
