@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import classes from './App.module.css';
-import Person from './Person/Person';
-import ErrorBoundry from "./ErrorBoundry/ErrorBoundry";
+// import classes from '../containers/App.module.css';
+import classes from '../components/Cockpit/Cockpit.module.css';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit'
+
+
 
 class App extends Component {
     // state can only be accessed in classed based components
@@ -60,52 +63,24 @@ class App extends Component {
   };
 
     render() {
-        // inline-styles will be scoped to component
         let persons = null; // set default state
 
-        let btnClasses = '';
-
-        if (this.state.showPerson) { // if the state changes
-            // set persons variable to contain all of persons 'html' to render
-            // it will render bkus {persons} is referenced inside the below return statement
-
-            // index param is passed in automatically with arrow fn at beginning
-            // key is default prop that helps update efficiently in dom
-            // index is not a good key(unique identifier) because it will change each time a person is deleted
-
-            // changed gets executed on an onChange event, in beginning of prop grab event obj
+        if (this.state.showPerson) {
             persons = (
-                <div>
-                    {this.state.persons.map((person, index) => {
-                        return <ErrorBoundry key={person.id}><Person
-                            click={() => this.deletePersonHandler(index)}
-                            name={person.name}
-                            age={person.age}
-                            changed={(e) => this.nameChangedHandler(e, person.id)}/></ErrorBoundry>
-                    })}
-                </div>
+                <Persons
+                    persons={this.state.persons}
+                    clicked={this.deletePersonHandler}
+                    changed={this.nameChangedHandler}/>
             );
-
-            btnClasses = classes.orange;
-
-        }
-
-        // let classes = ['orange', 'bold'].join(' '); // turn array of strings into one string of space seperated class names
-        let assignedClasses = [];
-        if(this.state.persons.length >= 2) {
-            assignedClasses.push(classes.orange)
-        }
-        if(this.state.persons.length <= 1) {
-            assignedClasses.push(classes.bold)
         }
 
         return (
                 <div className={classes.App}>
-                    <h1 className={assignedClasses.join(' ')}>Im a react app</h1>
-                    <button
-                        className={btnClasses}
-                        onClick={this.togglePersonHandler}>Display People
-                    </button>
+                    <Cockpit
+                    title={this.props.appTitle}
+                    showPersons={this.state.showPerson}
+                    persons={this.state.persons}
+                    clicked={this.togglePersonHandler}/>
                     {persons}
                 </div>
         );

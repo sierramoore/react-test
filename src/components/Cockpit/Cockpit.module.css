@@ -1,0 +1,35 @@
+.orange {
+    color: orange;
+}
+
+.bold {
+    font-weight: bold;
+}
+.Cockpit {
+    text-align: center;
+}
+
+.Cockpit button {
+    background-color: green;
+    color: white;
+    border: 2px solid lavender;
+    padding: 8px;
+    cursor: pointer;
+}
+
+
+.Cockpit button:hover {
+    background-color: lightgreen;
+    color: black;
+}
+
+.Cockpit button.orange {
+    color: orange;
+}
+.Cockpit button.orange:hover {
+    background-color: salmon;
+}
+
+.Cockpit button.bold {
+    font-weight: bold;
+}
