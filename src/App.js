@@ -1,22 +1,7 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-import './App.css';
+import classes from './App.module.css';
 import Person from './Person/Person';
-
-// styled components like this can conditionally render styles using boolean statement in a custom tag in the styleWrapper
-const StyledButton = styled.button`
-   background-color: ${props => props.alt ? 'red' : 'green'};
-   color: white;
-   font: sans-serif;
-   border: 2px solid lavender;
-   padding: 8px;
-   cursor: pointer;
-   
-   &:hover {
-       background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
-       color: black;
-   }
-`;
+import ErrorBoundry from "./ErrorBoundry/ErrorBoundry";
 
 class App extends Component {
     // state can only be accessed in classed based components
@@ -76,9 +61,9 @@ class App extends Component {
 
     render() {
         // inline-styles will be scoped to component
-
-
         let persons = null; // set default state
+
+        let btnClasses = '';
 
         if (this.state.showPerson) { // if the state changes
             // set persons variable to contain all of persons 'html' to render
@@ -92,34 +77,35 @@ class App extends Component {
             persons = (
                 <div>
                     {this.state.persons.map((person, index) => {
-                        return <Person
+                        return <ErrorBoundry key={person.id}><Person
                             click={() => this.deletePersonHandler(index)}
                             name={person.name}
                             age={person.age}
-                            key={person.id}
-                            changed={(e) => this.nameChangedHandler(e, person.id)}/>
+                            changed={(e) => this.nameChangedHandler(e, person.id)}/></ErrorBoundry>
                     })}
                 </div>
             );
 
+            btnClasses = classes.orange;
+
         }
 
         // let classes = ['orange', 'bold'].join(' '); // turn array of strings into one string of space seperated class names
-        let classes = [];
+        let assignedClasses = [];
         if(this.state.persons.length >= 2) {
-            classes.push('orange')
+            assignedClasses.push(classes.orange)
         }
         if(this.state.persons.length <= 1) {
-            classes.push('bold')
+            assignedClasses.push(classes.bold)
         }
 
         return (
-                <div className="App">
-                    <h1 className={classes.join(' ')}>Im a react app</h1>
-                    <StyledButton
-                        alt={this.state.showPerson}
+                <div className={classes.App}>
+                    <h1 className={assignedClasses.join(' ')}>Im a react app</h1>
+                    <button
+                        className={btnClasses}
                         onClick={this.togglePersonHandler}>Display People
-                    </StyledButton>
+                    </button>
                     {persons}
                 </div>
         );
