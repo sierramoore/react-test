@@ -1,4 +1,4 @@
-import React from 'react'; // not using a class that extends from {Component}
+import React, {Component} from 'react'; // not using a class that extends from {Component}
 // state is only avaliable with components that extend {Component}
 
 
@@ -6,19 +6,26 @@ import classes from './Person.module.css';
 
 
 // props.children is: <Person> anything here is props.children </Person>
-const person = (props) => {
+class Person extends Component {
+    render(){
+        return (
+            <div className={classes.Person}>
+                <p onClick={this.props.click}>
+                    I'm {this.props.name} and i am
+                    {this.props.age} years old.</p>
 
-  return (
-      <div className={classes.Person}>
-          <p onClick={props.click}>I'm {props.name} and i am {props.age} years old.</p>
-          <p>{props.children}</p>
-          <input type="text" onChange={props.changed} value={props.name}/>
-      </div>
+                <p>{this.props.children}</p>
 
-  )
+                <input type="text"
+                       onChange={this.props.changed}
+                       value={this.props.name}/>
+            </div>
+
+        )
+    }
 };
 
-export default person;
+export default Person;
 
 // if class based component (extending component) then use this.props syntax
 
