@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import classes from '../components/Cockpit/Cockpit.module.css';
+// import classes from '../components/Cockpit/Cockpit.module.css';
+
+import classes from '../containers/App.module.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit'
+import withClass from "../hoc/withClass";
+import Aux from '../hoc/Aux';
+import AuthContext from '../context/auth-context';
 
 
 class App extends Component {
@@ -13,7 +18,8 @@ class App extends Component {
     ],
       otherState: 'some other value',
       showPerson: false,
-      showCockpit: true
+      showCockpit: true,
+      authenticated: false
   };
 
   deletePersonHandler = (personIndex) => {
@@ -46,6 +52,10 @@ class App extends Component {
       this.setState({showPerson: !doesShow}); // change state to opposite of what current state is
   };
 
+  loginHandler = () => {
+      this.setState({authenticated: true})
+  }
+
   render() {
       let persons = null; // set default state
       if (this.state.showPerson) {
@@ -53,34 +63,44 @@ class App extends Component {
               <Persons
                   persons={this.state.persons}
                   clicked={this.deletePersonHandler}
-                  changed={this.nameChangedHandler}/>
+                  changed={this.nameChangedHandler}
+                  isAuthenticated={this.state.authenticated}/>
           );
       }
 
       return (
-          <div className={classes.App}>
+          <Aux>
               <button onClick={() => {
                   this.setState({showCockpit: false})}}
               >Remove Cockpit</button>
 
-              {this.state.showCockpit ?   <Cockpit
-                  title={this.props.appTitle}
-                  showPersons={this.state.showPerson}
-                  personsLength={this.state.persons.length}
-                  clicked={this.togglePersonHandler}
-              /> : null}
+              <AuthContext.Provider value={{
+                  authenticated: this.state.authenticated,
+                  login: this.loginHandler}}>
 
-              {persons}
+                {this.state.showCockpit ?   <Cockpit
+                    title={this.props.appTitle}
+                    showPersons={this.state.showPerson}
+                    personsLength={this.state.persons.length}
+                    clicked={this.togglePersonHandler}
+                /> : null}
 
-          </div>
+                {persons}
+              </AuthContext.Provider>
+
+          </Aux>
       );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);
 
 // in btn call an anyonmus function that returns switchNameHandler() function call..
 // when using arrow function syntax it implicity applies the return keyword directly after '=>' if its in one line if not in one line then wrap in curly braces
 
 // add a prop to determine true or false  (display person or not)
 // wrapped 'html Person(s)' in a div with a terinary if statement, if true display else null (dont show)
+
+// setState is not guarenteed to rerender instantly (so if using something like counters, return and update prevState first)
+
+// react only re-renders when props or state changes
